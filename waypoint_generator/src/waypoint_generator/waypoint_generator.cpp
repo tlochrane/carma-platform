@@ -152,7 +152,8 @@ std::vector<double> WaypointGenerator::apply_speed_limits(const std::vector<doub
   std::vector<double> out;
   for (int i = 0; i < speeds.size(); i++)
   {
-    out.push_back(std::min(speeds[i], speed_limits[i]));
+    // out.push_back(std::min(speeds[i], speed_limits[i]));
+    out.push_back(std::min(speeds[i], 5.0));
   }
 
   return out;

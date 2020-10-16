@@ -177,8 +177,16 @@ namespace inlanecruising_plugin
 
             cav_msgs::TrajectoryPlanPoint traj_point;
             // assume the vehicle is starting from stationary state because it is the same assumption made by pure pursuit wrapper node
-            double average_speed = std::max(previous_wp_v, 2.2352); // TODO need better solution for this
+            double average_speed = 1.0;//std::max(previous_wp_v, 1.2352); // TODO need better solution for this
             double delta_d = sqrt(pow(waypoints[i].pose.pose.position.x - previous_wp_x, 2) + pow(waypoints[i].pose.pose.position.y - previous_wp_y, 2));
+            double smooth_acc = 0.2;
+            if (waypoints[i].twist.twist.linear.x > previous_wp_v){
+                average_speed = sqrt(previous_wp_v*previous_wp_v + 2*smooth_acc*delta_d);
+            }
+            if (waypoints[i].twist.twist.linear.x < previous_wp_v){
+                average_speed = sqrt(previous_wp_v*previous_wp_v - 2*smooth_acc*delta_d);
+            }
+
             ros::Duration delta_t(delta_d / average_speed);
             traj_point.target_time = previous_wp_t + delta_t;
             traj_point.x = waypoints[i].pose.pose.position.x;
@@ -187,7 +195,7 @@ namespace inlanecruising_plugin
             traj_point.yaw = yaw;
             uneven_traj.push_back(traj_point);
 
-            previous_wp_v = waypoints[i].twist.twist.linear.x;
+            previous_wp_v = std::min(average_speed, waypoints[i].twist.twist.linear.x);
             previous_wp_x = uneven_traj.back().x;
             previous_wp_y = uneven_traj.back().y;
             previous_wp_y = uneven_traj.back().y;
