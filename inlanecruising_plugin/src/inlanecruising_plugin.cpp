@@ -177,9 +177,9 @@ namespace inlanecruising_plugin
 
             cav_msgs::TrajectoryPlanPoint traj_point;
             // assume the vehicle is starting from stationary state because it is the same assumption made by pure pursuit wrapper node
-            double average_speed = 1.0;//std::max(previous_wp_v, 1.2352); // TODO need better solution for this
+            double average_speed = std::max(previous_wp_v, 1.2); // TODO need better solution for this
             double delta_d = sqrt(pow(waypoints[i].pose.pose.position.x - previous_wp_x, 2) + pow(waypoints[i].pose.pose.position.y - previous_wp_y, 2));
-            double smooth_acc = 0.2;
+            double smooth_acc = 1;
             if (waypoints[i].twist.twist.linear.x > previous_wp_v){
                 average_speed = sqrt(previous_wp_v*previous_wp_v + 2*smooth_acc*delta_d);
             }

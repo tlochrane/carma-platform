@@ -58,6 +58,7 @@ int main(int argc, char** argv)
 
     double target_plan;
     pnh.param("target_plan_duration", target_plan, 15.0);
+    ROS_ERROR_STREAM(">>>>>>>>>>>>> target_plan_duration:" << target_plan);
     arbitrator::TreePlanner tp{*cf, png, bss, ros::Duration(target_plan)};
 
     double min_plan_duration;

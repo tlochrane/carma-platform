@@ -47,6 +47,7 @@ namespace arbitrator
                     // get plan duration
                     plan_duration = arbitrator_utils::get_plan_end_time(cur_plan) - arbitrator_utils::get_plan_start_time(cur_plan); 
                 }
+                ROS_ERROR_STREAM("plan_duration:" << plan_duration << ", target:" <<  target_plan_duration_);
                 // Evaluate terminal condition
                 if (plan_duration >= target_plan_duration_) 
                 {
@@ -62,6 +63,8 @@ namespace arbitrator
                 // Compute cost for each child and store in open list
                 for (auto child = children.begin(); child != children.end(); child++)
                 {
+                    if (child->maneuvers.empty())
+                        continue;
                     new_open_list.push_back(std::make_pair(*child, cost_function_.compute_cost_per_unit_distance(*child)));
                 }
             }
