@@ -36,6 +36,7 @@ namespace arbitrator
         for (auto it = res.begin(); it != res.end(); it++)
         {
             out.push_back(it->second.response.new_plan);
+            ROS_ERROR_STREAM(">>> topic name:" << it->first << ", response man size:" << it->second.response.new_plan.maneuvers.size());
         }
         return out;
     }

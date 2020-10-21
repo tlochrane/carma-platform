@@ -33,8 +33,10 @@ namespace arbitrator
         for (auto i = topics.begin(); i != topics.end(); i++) 
         {
             ros::ServiceClient sc = nh_->serviceClient<cav_srvs::PlanManeuvers>(*i);
+            
             if (sc.call(msg)) {
                 responses.emplace(*i, msg);
+                ROS_ERROR_STREAM("topic:" << *i << " & sc name:" << sc.getService() <<",size" << msg.response.new_plan.maneuvers.size());
             }
         }
         return responses;
