@@ -51,7 +51,7 @@ namespace trajectory_executor
 
         std::string default_control_plugin;
         _private_nh->param<std::string>("default_control_plugin", default_control_plugin, "NULL");
-
+        ROS_WARN_STREAM("def" << default_control_plugin);
         std::string default_control_plugin_topic;
         _private_nh->param<std::string>("default_control_plugin_topic", default_control_plugin_topic, "NULL");
 
