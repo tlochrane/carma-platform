@@ -51,10 +51,12 @@ namespace trajectory_executor
 
         std::string default_control_plugin;
         _private_nh->param<std::string>("default_control_plugin", default_control_plugin, "NULL");
+        
         ROS_WARN_STREAM("def" << default_control_plugin);
         std::string default_control_plugin_topic;
         _private_nh->param<std::string>("default_control_plugin_topic", default_control_plugin_topic, "NULL");
-
+        default_control_plugin_ = default_control_plugin;
+        default_control_plugin_topic_ = default_control_plugin_topic;
         out[default_control_plugin] = default_control_plugin_topic;
         return out;
     }
@@ -93,6 +95,8 @@ namespace trajectory_executor
             if (!_cur_traj->trajectory_points.empty()) {
                 // Determine the relevant control plugin for the current timestep
                 std::string control_plugin = _cur_traj->trajectory_points[0].controller_plugin_name;
+                // instructed to use default plugin
+                control_plugin = default_control_plugin_;
                 std::map<std::string, ros::Publisher>::iterator it = _traj_publisher_map.find(control_plugin);
                 if (it != _traj_publisher_map.end()) {
                     ROS_DEBUG("Found match for control plugin %s at point %d in current trajectory!",

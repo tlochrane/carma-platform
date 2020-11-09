@@ -117,6 +117,9 @@ namespace trajectory_executor {
             ros::Subscriber _state_sub; // Guidance State subscriber
             std::map<std::string, ros::Publisher> _traj_publisher_map; // Outbound plan publishers
 
+            std::string default_control_plugin_;
+            std::string default_control_plugin_topic_;
+
             // Trajectory plan tracking data. Synchronized on _cur_traj_mutex
             std::unique_ptr<cav_msgs::TrajectoryPlan> _cur_traj; 
             int _timesteps_since_last_traj {0};
