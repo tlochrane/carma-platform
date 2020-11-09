@@ -103,7 +103,7 @@
     <arg name="vehicle_calibration_dir" value="$(arg vehicle_calibration_dir)"/>
   </include>
   -->
-  <remap to="/guidance/mpc_follower/trajectory" from="/guidance/trajectory_plan"/>
+  <remap to="/guidance/pure_pursuit/trajectory" from="/guidance/trajectory_plan"/>
   <include file="$(find pure_pursuit_wrapper)/launch/pure_pursuit_wrapper.launch" />
 
   <!-- Twist Filter -->
