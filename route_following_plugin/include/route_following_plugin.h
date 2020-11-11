@@ -75,7 +75,6 @@ namespace route_following_plugin
          */
         bool identifyLaneChange(lanelet::routing::LaneletRelations relations, int target_id);
 
-    private:
 
         // CARMA ROS node handles
         std::shared_ptr<ros::CARMANodeHandle> nh_, pnh_;
@@ -128,6 +127,9 @@ namespace route_following_plugin
          * \return If service call successed
          */
         bool plan_maneuver_cb(cav_srvs::PlanManeuversRequest &req, cav_srvs::PlanManeuversResponse &resp);
+
+        private:
+
 
     };
 

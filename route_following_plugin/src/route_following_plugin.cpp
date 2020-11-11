@@ -21,6 +21,7 @@
 #include "route_following_plugin.h"
 #include <lanelet2_core/geometry/Lanelet.h>
 #include <lanelet2_core/geometry/BoundingBox.h>
+#include <lanelet2_extension/regulatory_elements/DigitalSpeedLimit.h>
 
 namespace route_following_plugin
 {
@@ -98,7 +99,17 @@ namespace route_following_plugin
         }
         double current_progress = wm_->routeTrackPos(current_loc).downtrack;
         double speed_progress = current_speed_;
-        double total_maneuver_length = current_progress + mvr_duration_ * RouteFollowingPlugin::TWENTY_FIVE_MPH_IN_MS;
+        //get speed limit from world model
+        double target_speed;
+        lanelet::DigitalSpeedLimitConstPtr digispeed_ptr=current_lanelet.regulatoryElementsAs<lanelet::DigitalSpeedLimit>()[0];
+        lanelet::Velocity speed_limit=digispeed_ptr->getSpeedLimit();
+        if(speed_limit.value()!=0){
+            target_speed=speed_limit.value();
+            std::cout<<"target speed set to speed limit"<<std::endl;
+        }
+        else target_speed=RouteFollowingPlugin::TWENTY_FIVE_MPH_IN_MS;
+        
+        double total_maneuver_length = current_progress + mvr_duration_ * target_speed;
         
         while(current_progress < total_maneuver_length && last_lanelet_index < shortest_path.size())
         {
@@ -114,11 +125,17 @@ namespace route_following_plugin
 
             resp.new_plan.maneuvers.push_back(
                 composeManeuverMessage(current_progress, end_dist, 
-                                       speed_progress, RouteFollowingPlugin::TWENTY_FIVE_MPH_IN_MS, 
+                                       speed_progress, target_speed, 
                                        shortest_path[last_lanelet_index].id(), ros::Time::now()));
 
             current_progress += dist_diff;
-            speed_progress = RouteFollowingPlugin::TWENTY_FIVE_MPH_IN_MS;
+            speed_progress = target_speed;
+            digispeed_ptr=current_lanelet.regulatoryElementsAs<lanelet::DigitalSpeedLimit>()[0];
+            speed_limit=digispeed_ptr->getSpeedLimit();
+            if(speed_limit.value()!=0){
+                target_speed=speed_limit.value();
+                std::cout<<"target speed set to speed limit"<<std::endl;
+            }
             if(current_progress >= total_maneuver_length || last_lanelet_index == shortest_path.size() - 1)
             {
                 break;
